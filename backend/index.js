@@ -6,10 +6,12 @@ const port = 8000;
 
 connectToMongo();
 
-//ENDPOINTS
-app.get('/', (req,res)=>{
-    res.send('hello world!!');
-})
+// MiddleWares
+app.use(express.json());
+
+//ENDPOINTS - Available Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/notes', require('./routes/notes'));
 
 // START THE SERVER
 app.listen(port, ()=>{
