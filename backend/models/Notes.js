@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const NotesSchema = new Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId, //Link notes Model with user Model with foreignkey
+        ref: 'user'
+    },
     title: {
         type: String,
         required: true
