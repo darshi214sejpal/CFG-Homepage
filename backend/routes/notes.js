@@ -6,7 +6,7 @@ const { body, validationResult } = require('express-validator');
 
 //ROUTE 1: Get All Notes of a User using: GET "/api/notes/fetchallnotes". Login required
 router.get('/fetchallnotes', fetchuser, async (req, res) => {
-    const notes = await Notes.find({user: req.user.id});
+    const notes = await Notes.find({ user: req.user.id });
     res.json(notes);
 })
 
@@ -15,7 +15,7 @@ router.get('/fetchallnotes', fetchuser, async (req, res) => {
 router.post('/addnote', fetchuser, [
     body('title', 'Enter title of minimum 3 characters length').isLength({ min: 3 }),
     body('description', 'Enter description of minimum 5 characters length').isLength({ min: 5 })
-    ], async (req, res) => {
+], async (req, res) => {
 
     // If there are errors return Bad request and the errors
     const errors = validationResult(req);
@@ -25,9 +25,9 @@ router.post('/addnote', fetchuser, [
 
     // If no errors add note
     try {
-        const {title, description, tag} = req.body;
+        const { title, description, tag } = req.body;
         const note = new Notes({
-            title,description,tag, user : req.user.id
+            title, description, tag, user: req.user.id
         })
         const savedNote = await note.save();
         res.json(savedNote);
@@ -39,26 +39,51 @@ router.post('/addnote', fetchuser, [
 
 //ROUTE 3: Update Note of a User using: PUT "/api/notes/updatenote". Login required
 router.put('/updatenote/:id', fetchuser, async (req, res) => {
-    const {title, description, tag} = req.body;
+    const { title, description, tag } = req.body;
 
-    // Create a newNote Object
-    const newNote = {};
+    try {
+        // Create a newNote Object
+        const newNote = {};
 
-    // Add title,description,tag to newNote object
-    if(title){newNote.title = title};
-    if(description){newNote.description = description};
-    if(tag){newNote.tag = tag};
+        // Add title,description,tag to newNote object
+        if (title) { newNote.title = title }
+        if (description) { newNote.description = description }
+        if (tag) { newNote.tag = tag }
 
-    // Find note by it's id if not found retrun error
-    let note = await Notes.findById(req.params.id);
-    if(!note){return res.status(404).send("Not Found")};
+        // Find note by it's id if not found retrun error
+        let note = await Notes.findById(req.params.id);
+        if (!note) { return res.status(404).send("Not Found") }
 
-    // If correct user is not updating then give error
-    if(note.user.toString() !== req.user.id){return res.status(401).send("Not Allowed")};
-    
-    // Find the note to be updated and update it                         if note is not there then create a new note
-    note = await Notes.findByIdAndUpdate(req.params.id, {$set: newNote}, {new: true});
-    res.json({note});
-    })
+        // If correct user is not updating then give error
+        if (note.user.toString() !== req.user.id) { return res.status(401).send("Not Allowed") }
 
+        // Find the note to be updated and update it                         if note is not there then create a new note
+        note = await Notes.findByIdAndUpdate(req.params.id, { $set: newNote }, { new: true });
+        res.json({ note });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Internal Server Error');
+    }
+})
+
+//ROUTE 4: Delete Note of a User using: DELETE "/api/notes/deletenote". Login required
+router.delete('/deletenote/:id', fetchuser, async (req, res) => {
+
+    try {
+        // Find note by it's id if not found retrun error
+        let note = await Notes.findById(req.params.id);
+        if (!note) { return res.status(404).send("Not Found") }
+
+        // Allow deletion only if user owns this note
+        if (note.user.toString() !== req.user.id) { return res.status(401).send("Not Allowed") }
+
+        // Find the note to be updated and update it                         
+        note = await Notes.findByIdAndDelete(req.params.id);
+        res.json({ "Success": "Note has been deleted!", note: note });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Internal Server Error');
+    }
+})
 module.exports = router;
