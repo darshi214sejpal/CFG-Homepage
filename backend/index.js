@@ -3,11 +3,13 @@ const express = require("express");
 const app = express();
 const hostname = '127.0.0.1';
 const port = 8000;
+const cors = require('cors');
 
 connectToMongo();
 
 // MiddleWares
 app.use(express.json());
+app.use(cors());
 
 //ENDPOINTS - Available Routes
 app.use('/api/auth', require('./routes/auth'));

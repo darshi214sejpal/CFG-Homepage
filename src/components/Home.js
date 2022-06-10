@@ -10,11 +10,12 @@ const Home = () => {
     //     // eslint-disable-next-line
     // }, []);
 
+    
     return (
-            <>
-                <AddNote/>
-                <Notes />
-            </>
+        <>
+            <AddNote />
+            <Notes />
+        </>
     )
 }
 
