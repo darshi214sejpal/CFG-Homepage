@@ -9,6 +9,8 @@ import {
 import Home from './components/Home';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
+import Footer from './components/Footer';
+
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
               <Route exact path="/signup" element={<SignUp />}></Route>
             </Routes>
           </div>
+          
+          <Footer>  </Footer>
         </Router>
       </NoteState>
     </>

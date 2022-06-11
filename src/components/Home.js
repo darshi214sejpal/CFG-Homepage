@@ -1,22 +1,11 @@
-import React from 'react'
-import AddNote from './AddNote'
-import Notes from './Notes'
-
-
+import React from "react";
+import web from "../assets/joy1.png"
+import HomeAbout from "./HomeAbout";
 const Home = () => {
-    // const a = useContext(noteContext)
-    // useEffect(()=> {
-    //     a.update()
-    //     // eslint-disable-next-line
-    // }, []);
-
-    
-    return (
-        <>
-            <AddNote />
-            <Notes />
-        </>
-    )
+  return (
+    <>
+      <HomeAbout name=" Welcome to " imgsrc={web} visit='/login' btname="Get Started" />
+    </>
+  );
 }
-
-export default Home
+export default Home;
